@@ -3,8 +3,14 @@ import './App.css';
 import { NoteForm } from './components/NoteForm';
 import { NoteList } from './components/NoteList';
 import { NoteDetail } from './components/NoteDetail';
+import { NoteFilters } from './components/NoteFilters';
 import { useNotes } from './hooks/useNotes';
 import type { NoteInput } from './models/note';
+import {
+  filterNotes,
+  getAvailableCategories,
+  getAvailableTags,
+} from './models/noteFilters';
 
 type ViewMode = 'empty' | 'detail' | 'form';
 
@@ -12,11 +18,21 @@ function App() {
   const { notes, loading, error, create, update, remove } = useNotes();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mode, setMode] = useState<ViewMode>('empty');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const selectedNote = useMemo(
     () => notes.find((n) => n.id === selectedId) ?? null,
     [notes, selectedId],
   );
+
+  const availableTags = useMemo(() => getAvailableTags(notes), [notes]);
+  const availableCategories = useMemo(() => getAvailableCategories(notes), [notes]);
+  const filteredNotes = useMemo(
+    () => filterNotes(notes, { tag: selectedTag, category: selectedCategory }),
+    [notes, selectedTag, selectedCategory],
+  );
+  const hasActiveFilter = Boolean(selectedTag || selectedCategory);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -68,14 +84,31 @@ function App() {
           <button type="button" className="btn-primary" onClick={handleNewNote}>
             + New note
           </button>
+          <NoteFilters
+            tags={availableTags}
+            categories={availableCategories}
+            selectedTag={selectedTag}
+            selectedCategory={selectedCategory}
+            onTagChange={setSelectedTag}
+            onCategoryChange={setSelectedCategory}
+            onClear={() => {
+              setSelectedTag('');
+              setSelectedCategory('');
+            }}
+          />
           {loading ? (
             <p>Loading...</p>
           ) : (
             <NoteList
-              notes={notes}
+              notes={filteredNotes}
               selectedId={selectedId}
               onSelect={handleSelect}
               onDelete={handleDelete}
+              emptyMessage={
+                hasActiveFilter
+                  ? 'No notes match the selected filters.'
+                  : 'No notes yet. Create your first one.'
+              }
             />
           )}
         </section>
