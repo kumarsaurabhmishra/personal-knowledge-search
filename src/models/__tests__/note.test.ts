@@ -22,6 +22,15 @@ describe('createNote', () => {
       'A note must have at least one tag.',
     );
   });
+
+  it('rejects empty and duplicate tags at the model boundary', () => {
+    expect(() => createNote({ title: 'Empty', body: '', tags: ['   '] })).toThrow(
+      'Tags cannot be empty.',
+    );
+    expect(() => createNote({ title: 'Duplicate', body: '', tags: ['Work', ' work '] })).toThrow(
+      'Duplicate tags are not allowed.',
+    );
+  });
 });
 
 describe('updateNote', () => {
@@ -40,5 +49,16 @@ describe('updateNote', () => {
     expect(() => updateNote(original, { tags: [] })).toThrow(
       'A note must have at least one tag.',
     );
+  });
+
+  it('trims category and stores undefined for an empty category', () => {
+    const withCategory = createNote({ title: 'A', body: '', tags: ['x'], category: '  Work  ' });
+    expect(withCategory.category).toBe('Work');
+
+    const withEmptyCategory = createNote({ title: 'A', body: '', tags: ['x'], category: '   ' });
+    expect(withEmptyCategory.category).toBeUndefined();
+
+    const withNoCategory = createNote({ title: 'A', body: '', tags: ['x'] });
+    expect(withNoCategory.category).toBeUndefined();
   });
 });

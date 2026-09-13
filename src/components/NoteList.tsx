@@ -22,12 +22,13 @@ export function NoteList({ notes, selectedId, onSelect, onDelete }: NoteListProp
           key={note.id}
           className={note.id === selectedId ? 'note-list-item selected' : 'note-list-item'}
         >
-          <button
-            type="button"
-            className="note-list-item-main"
-            onClick={() => onSelect(note.id)}
-          >
-            <span className="note-list-item-title">{note.title || '(untitled)'}</span>
+          <button type="button" className="note-list-item-main" onClick={() => onSelect(note.id)}>
+            <div className="note-list-item-heading">
+              <span className="note-list-item-title">{note.title || '(untitled)'}</span>
+              {note.category && (
+                <span className="note-list-item-category">{note.category}</span>
+              )}
+            </div>
             <span className="note-list-item-tags">{note.tags.join(', ')}</span>
           </button>
 
@@ -35,6 +36,7 @@ export function NoteList({ notes, selectedId, onSelect, onDelete }: NoteListProp
             <div className="note-list-item-confirm">
               <button
                 type="button"
+                className="btn-danger"
                 onClick={() => {
                   onDelete(note.id);
                   setConfirmingId(null);
@@ -42,14 +44,14 @@ export function NoteList({ notes, selectedId, onSelect, onDelete }: NoteListProp
               >
                 Really delete?
               </button>
-              <button type="button" onClick={() => setConfirmingId(null)}>
+              <button type="button" className="btn-text" onClick={() => setConfirmingId(null)}>
                 Cancel
               </button>
             </div>
           ) : (
             <button
               type="button"
-              className="note-list-item-delete"
+              className="btn-text note-list-item-delete"
               onClick={() => setConfirmingId(note.id)}
               aria-label={`Delete ${note.title || 'note'}`}
             >
