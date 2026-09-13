@@ -39,6 +39,8 @@ function App() {
     () => searchNotes(filteredNotes, searchQuery),
     [filteredNotes, searchQuery],
   );
+  const isSelectedNoteVisible =
+    selectedNote !== null && searchResults.some((note) => note.id === selectedNote.id);
   const hasActiveFilter = Boolean(selectedTag || selectedCategory);
   const hasActiveSearch = searchQuery.trim().length > 0;
 
@@ -141,8 +143,13 @@ function App() {
               onCancel={handleCancel}
             />
           )}
-          {mode === 'detail' && selectedNote && (
+          {mode === 'detail' && selectedNote && isSelectedNoteVisible && (
             <NoteDetail note={selectedNote} onEdit={handleEdit} />
+          )}
+          {mode === 'detail' && selectedNote && !isSelectedNoteVisible && (
+            <p className="app-form-placeholder">
+              The selected note is hidden by your current search or filters.
+            </p>
           )}
           {mode === 'empty' && (
             <p className="app-form-placeholder">

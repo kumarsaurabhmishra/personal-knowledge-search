@@ -58,6 +58,11 @@ src/
    category, or both.
 5. Select **Clear** to remove all active filters.
 
+Keyboard shortcuts:
+
+- Press `/` outside a form field to focus the search box.
+- Press `Escape` in the search box to clear an active query.
+
 Tag and category matching ignores capitalization and surrounding whitespace.
 When both filters are selected, a note must match both values.
 
@@ -72,7 +77,7 @@ separate future story.
 
 ## Testing
 
-53 tests across the model, validation, storage, filtering, search, and UI layers,
+61 tests across the model, validation, storage, filtering, search, and UI layers,
 including:
 
 - Note creation/update rules (id generation, tag requirement, timestamps)
@@ -86,6 +91,12 @@ including:
 - Search-input query, result-count, and clear interactions
 - Normalized title, body, and tag search matching
 - Empty-search, no-results, and clear-to-restore application states
+- Search keyboard focus and Escape-to-clear behavior
+- Application-level title, body, tag, and combined search/filter interactions
+- Filter-aware result counts and selected-detail visibility regression coverage
+
+For release-level browser checks, follow the
+[Search Manual QA Checklist](docs/search-manual-qa.md).
 
 ## Status
 
@@ -101,4 +112,5 @@ including:
 - [x] Story 3 Task 1: search input and results state
 - [x] Story 3 Task 2: normalized title, body, and tag matching
 - [x] Story 3 Task 3: empty-search and no-results states
-- [ ] Story 3 Task 4: responsive layout and keyboard accessibility
+- [x] Story 3 Task 4: responsive layout and keyboard accessibility
+- [x] Story 3 Task 5: search tests and manual QA checklist

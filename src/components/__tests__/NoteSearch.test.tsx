@@ -38,4 +38,26 @@ describe('NoteSearch', () => {
     expect(searchbox).toHaveValue('');
     expect(screen.getByText('3 notes')).toBeInTheDocument();
   });
+
+  it('focuses the search field when slash is pressed outside an editor', async () => {
+    const user = userEvent.setup();
+    render(<SearchHarness />);
+
+    await user.keyboard('/');
+
+    expect(screen.getByRole('searchbox', { name: 'Search notes' })).toHaveFocus();
+  });
+
+  it('clears the query with Escape while preserving search focus', async () => {
+    const user = userEvent.setup();
+    render(<SearchHarness />);
+
+    const searchbox = screen.getByRole('searchbox', { name: 'Search notes' });
+    await user.type(searchbox, 'project');
+    await user.keyboard('{Escape}');
+
+    expect(searchbox).toHaveValue('');
+    expect(searchbox).toHaveFocus();
+    expect(screen.getByText('3 notes')).toBeInTheDocument();
+  });
 });
