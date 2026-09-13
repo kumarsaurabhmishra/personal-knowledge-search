@@ -4,6 +4,7 @@ import { NoteForm } from './components/NoteForm';
 import { NoteList } from './components/NoteList';
 import { NoteDetail } from './components/NoteDetail';
 import { NoteFilters } from './components/NoteFilters';
+import { NoteSearch } from './components/NoteSearch';
 import { useNotes } from './hooks/useNotes';
 import type { NoteInput } from './models/note';
 import {
@@ -20,6 +21,7 @@ function App() {
   const [mode, setMode] = useState<ViewMode>('empty');
   const [selectedTag, setSelectedTag] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const selectedNote = useMemo(
     () => notes.find((n) => n.id === selectedId) ?? null,
@@ -32,6 +34,8 @@ function App() {
     () => filterNotes(notes, { tag: selectedTag, category: selectedCategory }),
     [notes, selectedTag, selectedCategory],
   );
+  // Task 2 will apply normalized title/body/tag matching to this result set.
+  const searchResults = filteredNotes;
   const hasActiveFilter = Boolean(selectedTag || selectedCategory);
 
   const handleSelect = (id: string) => {
@@ -84,6 +88,13 @@ function App() {
           <button type="button" className="btn-primary" onClick={handleNewNote}>
             + New note
           </button>
+          <NoteSearch
+            query={searchQuery}
+            resultCount={searchResults.length}
+            totalCount={notes.length}
+            onQueryChange={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+          />
           <NoteFilters
             tags={availableTags}
             categories={availableCategories}
@@ -100,7 +111,7 @@ function App() {
             <p>Loading...</p>
           ) : (
             <NoteList
-              notes={filteredNotes}
+              notes={searchResults}
               selectedId={selectedId}
               onSelect={handleSelect}
               onDelete={handleDelete}
