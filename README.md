@@ -70,7 +70,7 @@ separate future story.
 
 ## Testing
 
-41 tests across the model, validation, storage, filtering, and UI layers,
+43 tests across the model, validation, storage, filtering, and UI layers,
 including:
 
 - Note creation/update rules (id generation, tag requirement, timestamps)
@@ -80,6 +80,7 @@ including:
 - Form validation UX (inline errors, blocked save, error clearing)
 - Tag normalization, duplicate detection, and filtering combinations
 - Tag and category rendering on note cards and detail views
+- User-level tag/category selection, combined filtering, clearing, and empty states
 
 ## Status
 
@@ -91,4 +92,4 @@ including:
 - [x] Tag and optional category fields
 - [x] Tag entry, removal, and display
 - [x] Tag and category filtering
-- [ ] Complete Story 2 filtering interaction tests
+- [x] Complete Story 2 filtering interaction tests
