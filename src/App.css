@@ -34,8 +34,17 @@
 }
 
 @media (max-width: 700px) {
+  .app {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .app-header {
+    margin-bottom: 1.25rem;
+  }
+
   .app-layout {
     flex-direction: column;
+    gap: 1.25rem;
   }
 
   .app-list-pane,
@@ -102,6 +111,62 @@
 .app-list-pane > .btn-primary {
   width: 100%;
   margin-bottom: 1.25rem;
+}
+
+.note-search {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.note-search > label {
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.note-search-control {
+  position: relative;
+}
+
+.note-search-control input {
+  width: 100%;
+  min-height: 2.55rem;
+  padding: 0.55rem 3.4rem 0.55rem 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(38, 35, 25, 0.04);
+  font-size: 0.88rem;
+}
+
+.note-search-control input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.note-search-control input:hover {
+  border-color: var(--color-ink-soft);
+}
+
+.note-search-control button {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  padding: 0;
+  transform: translateY(-50%);
+  color: var(--color-accent);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.note-search-status {
+  min-height: 1em;
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 0.72rem;
 }
 
 .note-filters {
@@ -433,4 +498,62 @@
   color: var(--color-ink-soft);
   border-top: 1px solid var(--color-line);
   padding-top: 0.6rem;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding-inline: 0.75rem;
+  }
+
+  .app-list-pane > .btn-primary,
+  .note-search-control input,
+  .note-filter-field select {
+    min-height: 2.75rem;
+  }
+
+  .note-list-item {
+    align-items: flex-start;
+  }
+
+  .note-list-item-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .note-list-item-delete {
+    margin-top: 0.25rem;
+    margin-right: 0.15rem;
+  }
+
+  .note-list-item-confirm {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0.35rem 0.35rem 0.35rem 0;
+  }
+
+  .note-form,
+  .note-detail {
+    padding: 1.1rem;
+  }
+
+  .note-form-tag-input,
+  .note-form-actions,
+  .note-detail-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .note-form-tag-input .btn-secondary,
+  .note-form-actions .btn-primary,
+  .note-form-actions .btn-text,
+  .note-detail-header .btn-secondary {
+    min-height: 2.75rem;
+  }
+
+  .note-detail-section {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
 }

@@ -4,6 +4,7 @@ import { NoteForm } from './components/NoteForm';
 import { NoteList } from './components/NoteList';
 import { NoteDetail } from './components/NoteDetail';
 import { NoteFilters } from './components/NoteFilters';
+import { NoteSearch } from './components/NoteSearch';
 import { useNotes } from './hooks/useNotes';
 import type { NoteInput } from './models/note';
 import {
@@ -11,6 +12,7 @@ import {
   getAvailableCategories,
   getAvailableTags,
 } from './models/noteFilters';
+import { searchNotes } from './models/noteSearch';
 
 type ViewMode = 'empty' | 'detail' | 'form';
 
@@ -20,6 +22,7 @@ function App() {
   const [mode, setMode] = useState<ViewMode>('empty');
   const [selectedTag, setSelectedTag] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const selectedNote = useMemo(
     () => notes.find((n) => n.id === selectedId) ?? null,
@@ -32,7 +35,14 @@ function App() {
     () => filterNotes(notes, { tag: selectedTag, category: selectedCategory }),
     [notes, selectedTag, selectedCategory],
   );
+  const searchResults = useMemo(
+    () => searchNotes(filteredNotes, searchQuery),
+    [filteredNotes, searchQuery],
+  );
+  const isSelectedNoteVisible =
+    selectedNote !== null && searchResults.some((note) => note.id === selectedNote.id);
   const hasActiveFilter = Boolean(selectedTag || selectedCategory);
+  const hasActiveSearch = searchQuery.trim().length > 0;
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -84,6 +94,13 @@ function App() {
           <button type="button" className="btn-primary" onClick={handleNewNote}>
             + New note
           </button>
+          <NoteSearch
+            query={searchQuery}
+            resultCount={searchResults.length}
+            totalCount={notes.length}
+            onQueryChange={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+          />
           <NoteFilters
             tags={availableTags}
             categories={availableCategories}
@@ -100,14 +117,18 @@ function App() {
             <p>Loading...</p>
           ) : (
             <NoteList
-              notes={filteredNotes}
+              notes={searchResults}
               selectedId={selectedId}
               onSelect={handleSelect}
               onDelete={handleDelete}
               emptyMessage={
-                hasActiveFilter
-                  ? 'No notes match the selected filters.'
-                  : 'No notes yet. Create your first one.'
+                hasActiveSearch && hasActiveFilter
+                  ? 'No notes match your search and selected filters.'
+                  : hasActiveSearch
+                    ? 'No notes match your search.'
+                    : hasActiveFilter
+                      ? 'No notes match the selected filters.'
+                      : 'No notes yet. Create your first one.'
               }
             />
           )}
@@ -122,8 +143,13 @@ function App() {
               onCancel={handleCancel}
             />
           )}
-          {mode === 'detail' && selectedNote && (
+          {mode === 'detail' && selectedNote && isSelectedNoteVisible && (
             <NoteDetail note={selectedNote} onEdit={handleEdit} />
+          )}
+          {mode === 'detail' && selectedNote && !isSelectedNoteVisible && (
+            <p className="app-form-placeholder">
+              The selected note is hidden by your current search or filters.
+            </p>
           )}
           {mode === 'empty' && (
             <p className="app-form-placeholder">
