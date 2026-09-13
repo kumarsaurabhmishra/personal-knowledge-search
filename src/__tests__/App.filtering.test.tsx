@@ -84,3 +84,36 @@ describe('App filtering interactions', () => {
     await waitFor(() => expect(screen.queryByText('Shopping list')).not.toBeInTheDocument());
   });
 });
+
+describe('App search states', () => {
+  it('treats whitespace-only input as an empty search', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByRole('searchbox', { name: 'Search notes' }), '   ');
+
+    expect(screen.getByText('Release plan')).toBeInTheDocument();
+    expect(screen.getByText('Shopping list')).toBeInTheDocument();
+    expect(screen.getByText('Meeting notes')).toBeInTheDocument();
+    expect(screen.getByText('3 notes')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
+  });
+
+  it('shows a search-specific empty state and restores notes when cleared', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByRole('searchbox', { name: 'Search notes' }), 'not present');
+
+    expect(screen.getByText('No notes match your search.')).toBeInTheDocument();
+    expect(screen.getByText('0 of 3 notes')).toBeInTheDocument();
+    expect(screen.queryByText('Release plan')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Clear search' }));
+
+    expect(screen.getByText('Release plan')).toBeInTheDocument();
+    expect(screen.getByText('Shopping list')).toBeInTheDocument();
+    expect(screen.getByText('Meeting notes')).toBeInTheDocument();
+    expect(screen.queryByText('No notes match your search.')).not.toBeInTheDocument();
+  });
+});

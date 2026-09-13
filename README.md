@@ -72,7 +72,7 @@ separate future story.
 
 ## Testing
 
-51 tests across the model, validation, storage, filtering, search, and UI layers,
+53 tests across the model, validation, storage, filtering, search, and UI layers,
 including:
 
 - Note creation/update rules (id generation, tag requirement, timestamps)
@@ -85,6 +85,7 @@ including:
 - User-level tag/category selection, combined filtering, clearing, and empty states
 - Search-input query, result-count, and clear interactions
 - Normalized title, body, and tag search matching
+- Empty-search, no-results, and clear-to-restore application states
 
 ## Status
 
@@ -99,4 +100,5 @@ including:
 - [x] Complete Story 2 filtering interaction tests
 - [x] Story 3 Task 1: search input and results state
 - [x] Story 3 Task 2: normalized title, body, and tag matching
-- [ ] Story 3 Task 3: empty-search and no-results states
+- [x] Story 3 Task 3: empty-search and no-results states
+- [ ] Story 3 Task 4: responsive layout and keyboard accessibility

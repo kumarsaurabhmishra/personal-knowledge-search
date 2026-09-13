@@ -13,7 +13,7 @@ export function NoteSearch({
   onQueryChange,
   onClear,
 }: NoteSearchProps) {
-  const hasQuery = query.length > 0;
+  const hasQuery = query.trim().length > 0;
 
   return (
     <search className="note-search" aria-label="Search saved notes">
