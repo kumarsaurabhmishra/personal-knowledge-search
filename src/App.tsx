@@ -12,6 +12,7 @@ import {
   getAvailableCategories,
   getAvailableTags,
 } from './models/noteFilters';
+import { searchNotes } from './models/noteSearch';
 
 type ViewMode = 'empty' | 'detail' | 'form';
 
@@ -34,9 +35,12 @@ function App() {
     () => filterNotes(notes, { tag: selectedTag, category: selectedCategory }),
     [notes, selectedTag, selectedCategory],
   );
-  // Task 2 will apply normalized title/body/tag matching to this result set.
-  const searchResults = filteredNotes;
+  const searchResults = useMemo(
+    () => searchNotes(filteredNotes, searchQuery),
+    [filteredNotes, searchQuery],
+  );
   const hasActiveFilter = Boolean(selectedTag || selectedCategory);
+  const hasActiveSearch = searchQuery.trim().length > 0;
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -116,9 +120,13 @@ function App() {
               onSelect={handleSelect}
               onDelete={handleDelete}
               emptyMessage={
-                hasActiveFilter
-                  ? 'No notes match the selected filters.'
-                  : 'No notes yet. Create your first one.'
+                hasActiveSearch && hasActiveFilter
+                  ? 'No notes match your search and selected filters.'
+                  : hasActiveSearch
+                    ? 'No notes match your search.'
+                    : hasActiveFilter
+                      ? 'No notes match the selected filters.'
+                      : 'No notes yet. Create your first one.'
               }
             />
           )}

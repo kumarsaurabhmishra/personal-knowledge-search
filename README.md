@@ -41,6 +41,7 @@ src/
 - View tags and categories on note cards and note details
 - Filter notes by tag, category, or both together
 - Enter and clear a search query using the saved-notes search control
+- Search note titles, body text, and tags with normalized matching
 - Clear active filters and return to the complete note list
 - Reject empty and duplicate tags using case-insensitive comparison
 - Notes persist in the browser's IndexedDB and survive a page refresh
@@ -71,7 +72,7 @@ separate future story.
 
 ## Testing
 
-45 tests across the model, validation, storage, filtering, and UI layers,
+51 tests across the model, validation, storage, filtering, search, and UI layers,
 including:
 
 - Note creation/update rules (id generation, tag requirement, timestamps)
@@ -83,6 +84,7 @@ including:
 - Tag and category rendering on note cards and detail views
 - User-level tag/category selection, combined filtering, clearing, and empty states
 - Search-input query, result-count, and clear interactions
+- Normalized title, body, and tag search matching
 
 ## Status
 
@@ -96,4 +98,5 @@ including:
 - [x] Tag and category filtering
 - [x] Complete Story 2 filtering interaction tests
 - [x] Story 3 Task 1: search input and results state
-- [ ] Story 3 Task 2: normalized title, body, and tag matching
+- [x] Story 3 Task 2: normalized title, body, and tag matching
+- [ ] Story 3 Task 3: empty-search and no-results states
