@@ -9,11 +9,7 @@ module.exports = {
   '^.+\\.tsx?$': [
     'ts-jest',
     {
-      tsconfig: {
-        jsx: 'react-jsx',
-        types: ['jest', '@testing-library/jest-dom'],
-      },
-      isolatedModules: true,
+      tsconfig: 'tsconfig.app.json',
     },
   ],
 },
