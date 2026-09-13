@@ -6,13 +6,20 @@ interface NoteListProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  emptyMessage?: string;
 }
 
-export function NoteList({ notes, selectedId, onSelect, onDelete }: NoteListProps) {
+export function NoteList({
+  notes,
+  selectedId,
+  onSelect,
+  onDelete,
+  emptyMessage = 'No notes yet. Create your first one.',
+}: NoteListProps) {
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   if (notes.length === 0) {
-    return <p className="note-list-empty">No notes yet. Create your first one.</p>;
+    return <p className="note-list-empty">{emptyMessage}</p>;
   }
 
   return (

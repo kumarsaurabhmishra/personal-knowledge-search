@@ -41,6 +41,7 @@ h3 {
 
 button,
 input,
+select,
 textarea {
   font-family: inherit;
   color: inherit;
@@ -53,6 +54,7 @@ textarea {
 
 @media (prefers-reduced-motion: no-preference) {
   button,
+  select,
   .note-list-item {
     transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
   }
