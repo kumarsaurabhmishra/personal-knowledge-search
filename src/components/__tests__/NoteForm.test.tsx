@@ -35,11 +35,16 @@ describe('NoteForm validation', () => {
     render(<NoteForm note={null} onSave={onSave} onCancel={jest.fn()} />);
 
     await user.type(screen.getByLabelText(/title/i), 'Groceries');
-    await user.type(screen.getByLabelText(/tags/i), 'home');
+    await user.type(screen.getByLabelText(/^tags$/i), 'home');
     await user.click(screen.getByRole('button', { name: /add tag/i }));
     await user.click(screen.getByRole('button', { name: /create note/i }));
 
-    expect(onSave).toHaveBeenCalledWith({ title: 'Groceries', body: '', tags: ['home'] });
+    expect(onSave).toHaveBeenCalledWith({
+      title: 'Groceries',
+      body: '',
+      tags: ['home'],
+      category: undefined,
+    });
   });
 
   it('clears a previous error once the field becomes valid and resubmitted', async () => {
@@ -57,5 +62,28 @@ describe('NoteForm validation', () => {
 
     expect(screen.queryByText(/title is required/i)).not.toBeInTheDocument();
     expect(onSave).toHaveBeenCalled();
+  });
+
+  it('shows an error and does not add a duplicate tag (case-insensitive)', async () => {
+    const user = userEvent.setup();
+    render(<NoteForm note={null} onSave={jest.fn()} onCancel={jest.fn()} />);
+
+    const tagInput = screen.getByLabelText('Tags');
+    await user.type(tagInput, 'Work');
+    await user.click(screen.getByRole('button', { name: /add tag/i }));
+    await user.type(tagInput, ' work ');
+    await user.click(screen.getByRole('button', { name: /add tag/i }));
+
+    expect(await screen.findByText(/already exists/i)).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(1); // only one tag chip
+  });
+
+  it('shows an error and does not add an empty tag', async () => {
+    const user = userEvent.setup();
+    render(<NoteForm note={null} onSave={jest.fn()} onCancel={jest.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: /add tag/i }));
+
+    expect(await screen.findByText(/tag cannot be empty/i)).toBeInTheDocument();
   });
 });

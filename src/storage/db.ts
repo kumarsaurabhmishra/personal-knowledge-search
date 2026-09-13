@@ -1,5 +1,5 @@
 const DB_NAME = 'notes-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 export const STORE_NAME = 'notes';
 
 let dbPromise: Promise<IDBDatabase> | null = null;
@@ -13,7 +13,27 @@ function openDb(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         store.createIndex('tags', 'tags', { multiEntry: true });
+        return;
       }
+
+      const store = request.transaction!.objectStore(STORE_NAME);
+      if (!store.indexNames.contains('tags')) {
+        store.createIndex('tags', 'tags', { multiEntry: true });
+      }
+
+      // Notes created before Story 2 do not have tags. Normalize them during
+      // the v2 upgrade so every Note returned to the UI has the current shape.
+      const cursorRequest = store.openCursor();
+      cursorRequest.onsuccess = () => {
+        const cursor = cursorRequest.result;
+        if (!cursor) return;
+
+        const note = cursor.value;
+        if (!Array.isArray(note.tags)) {
+          cursor.update({ ...note, tags: [] });
+        }
+        cursor.continue();
+      };
     };
 
     request.onsuccess = () => resolve(request.result);

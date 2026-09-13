@@ -72,4 +72,37 @@ describe('noteStore', () => {
     const found = await getNote(note.id);
     expect(found?.title).toBe('Survives refresh');
   });
+
+  it('upgrades legacy notes to the current shape and creates the tags index', async () => {
+    const legacyNote = {
+      id: 'legacy-note',
+      title: 'Created before tags',
+      body: 'Legacy body',
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    await new Promise<void>((resolve, reject) => {
+      const request = indexedDB.open('notes-db', 1);
+      request.onupgradeneeded = () => {
+        request.result.createObjectStore('notes', { keyPath: 'id' }).add(legacyNote);
+      };
+      request.onsuccess = () => {
+        request.result.close();
+        resolve();
+      };
+      request.onerror = () => reject(request.error);
+    });
+
+    const notes = await getAllNotes();
+    expect(notes).toEqual([{ ...legacyNote, tags: [] }]);
+
+    const dbRequest = indexedDB.open('notes-db', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      dbRequest.onsuccess = () => resolve(dbRequest.result);
+      dbRequest.onerror = () => reject(dbRequest.error);
+    });
+    expect(db.transaction('notes').objectStore('notes').indexNames.contains('tags')).toBe(true);
+    db.close();
+  });
 });

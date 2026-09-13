@@ -1,14 +1,11 @@
 import type { NoteInput } from './note';
+import { normalizeTag } from './tags';
 
 export interface NoteValidationErrors {
   title?: string;
   tags?: string;
 }
 
-/**
- * Validates note input before it reaches storage. Returns an empty object
- * when valid. Body has no rules — a note can have empty body content.
- */
 export function validateNoteInput(input: NoteInput): NoteValidationErrors {
   const errors: NoteValidationErrors = {};
 
@@ -18,6 +15,14 @@ export function validateNoteInput(input: NoteInput): NoteValidationErrors {
 
   if (input.tags.length === 0) {
     errors.tags = 'At least one tag is required.';
+  } else if (input.tags.some((t) => t.trim().length === 0)) {
+    errors.tags = 'Tags cannot be empty.';
+  } else {
+    const normalized = input.tags.map(normalizeTag);
+    const hasDuplicates = new Set(normalized).size !== normalized.length;
+    if (hasDuplicates) {
+      errors.tags = 'Duplicate tags are not allowed.';
+    }
   }
 
   return errors;

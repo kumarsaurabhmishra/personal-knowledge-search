@@ -35,4 +35,14 @@ describe('validateNoteInput', () => {
       tags: 'At least one tag is required.',
     });
   });
+
+  it('flags an empty tag in the list', () => {
+  const errors = validateNoteInput({ title: 'A', body: '', tags: ['work', '   '] });
+  expect(errors.tags).toBe('Tags cannot be empty.');
+});
+
+it('flags case-insensitive duplicate tags', () => {
+  const errors = validateNoteInput({ title: 'A', body: '', tags: ['Work', 'work'] });
+  expect(errors.tags).toBe('Duplicate tags are not allowed.');
+});
 });
