@@ -52,7 +52,7 @@
 .app-discovery {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  align-items: start;
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
@@ -336,6 +336,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 1em;
   margin-bottom: 0.38rem;
 }
 
