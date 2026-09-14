@@ -5,6 +5,7 @@ import { NoteList } from './components/NoteList';
 import { NoteDetail } from './components/NoteDetail';
 import { NoteFilters } from './components/NoteFilters';
 import { NoteSearch } from './components/NoteSearch';
+import { Icon } from './components/Icon';
 import { useNotes } from './hooks/useNotes';
 import type { NoteInput } from './models/note';
 import {
@@ -73,6 +74,11 @@ function App() {
     setMode(selectedNote ? 'detail' : 'empty');
   };
 
+  const handleBackToNotes = () => {
+    setSelectedId(null);
+    setMode('empty');
+  };
+
   const handleDelete = async (id: string) => {
     await remove(id);
     if (id === selectedId) {
@@ -82,39 +88,49 @@ function App() {
   };
 
   return (
-    <main className="app">
+    <main className={`app ${mode !== 'empty' ? 'app-workspace-open' : ''}`}>
       <div className="app-header">
-        <h1>Notes</h1>
-        <p className="app-subtitle">Private, local notes — nothing leaves your browser.</p>
+        <div className="app-heading">
+          <span className="app-eyebrow">Personal knowledge</span>
+          <h1>Notes</h1>
+          <p className="app-subtitle">A quiet place for everything worth remembering.</p>
+        </div>
+        <button type="button" className="btn-primary app-new-note" onClick={handleNewNote}>
+          <Icon name="add" /> New note
+        </button>
       </div>
       {error && <p className="app-error">{error}</p>}
 
-      <div className="app-layout">
+      <section className="app-discovery" aria-label="Find and filter notes">
+        <NoteSearch
+          query={searchQuery}
+          resultCount={searchResults.length}
+          totalCount={notes.length}
+          onQueryChange={setSearchQuery}
+          onClear={() => setSearchQuery('')}
+        />
+        <NoteFilters
+          tags={availableTags}
+          categories={availableCategories}
+          selectedTag={selectedTag}
+          selectedCategory={selectedCategory}
+          onTagChange={setSelectedTag}
+          onCategoryChange={setSelectedCategory}
+          onClear={() => {
+            setSelectedTag('');
+            setSelectedCategory('');
+          }}
+        />
+      </section>
+
+      <div className={`app-layout ${mode !== 'empty' ? 'has-workspace' : ''}`}>
         <section className="app-list-pane">
-          <button type="button" className="btn-primary" onClick={handleNewNote}>
-            + New note
-          </button>
-          <NoteSearch
-            query={searchQuery}
-            resultCount={searchResults.length}
-            totalCount={notes.length}
-            onQueryChange={setSearchQuery}
-            onClear={() => setSearchQuery('')}
-          />
-          <NoteFilters
-            tags={availableTags}
-            categories={availableCategories}
-            selectedTag={selectedTag}
-            selectedCategory={selectedCategory}
-            onTagChange={setSelectedTag}
-            onCategoryChange={setSelectedCategory}
-            onClear={() => {
-              setSelectedTag('');
-              setSelectedCategory('');
-            }}
-          />
+          <div className="app-pane-heading">
+            <h2>Your notes</h2>
+            <span>{searchResults.length}</span>
+          </div>
           {loading ? (
-            <p>Loading...</p>
+            <p className="app-loading">Loading notes…</p>
           ) : (
             <NoteList
               notes={searchResults}
@@ -134,7 +150,12 @@ function App() {
           )}
         </section>
 
-        <section className="app-form-pane">
+        <section className="app-form-pane" aria-label="Note workspace">
+          {mode !== 'empty' && (
+            <button type="button" className="btn-text app-mobile-back" onClick={handleBackToNotes}>
+              <Icon name="arrow-left" /> All notes
+            </button>
+          )}
           {mode === 'form' && (
             <NoteForm
               key={selectedNote?.id ?? 'new-note'}
@@ -152,9 +173,11 @@ function App() {
             </p>
           )}
           {mode === 'empty' && (
-            <p className="app-form-placeholder">
-              Nothing selected. Choose a note on the left, or start a new one.
-            </p>
+            <div className="app-empty-workspace">
+              <span aria-hidden="true">✦</span>
+              <h2>Select a note</h2>
+              <p>Choose something from your list, or create a new note.</p>
+            </div>
           )}
         </section>
       </div>

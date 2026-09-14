@@ -1,4 +1,5 @@
 import type { Note } from '../models/note';
+import { Icon } from './Icon';
 
 interface NoteDetailProps {
   note: Note;
@@ -11,7 +12,7 @@ export function NoteDetail({ note, onEdit }: NoteDetailProps) {
       <div className="note-detail-header">
         <h2>{note.title || '(untitled)'}</h2>
         <button type="button" className="btn-secondary" onClick={onEdit}>
-          Edit
+          <Icon name="edit" /> Edit
         </button>
       </div>
 
