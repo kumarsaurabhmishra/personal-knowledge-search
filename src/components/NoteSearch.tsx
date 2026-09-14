@@ -42,7 +42,7 @@ export function NoteSearch({
   }, []);
 
   return (
-    <search className="note-search" aria-label="Search saved notes">
+    <div className="note-search" role="search" aria-label="Search saved notes">
       <label htmlFor="note-search-input">Search notes</label>
       <div className="note-search-control">
         <input
@@ -72,6 +72,6 @@ export function NoteSearch({
           ? `${resultCount} of ${totalCount} notes`
           : `${totalCount} notes`}
       </p>
-    </search>
+    </div>
   );
 }

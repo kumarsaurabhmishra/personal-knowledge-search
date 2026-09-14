@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Note } from '../models/note';
+import { Icon } from './Icon';
 
 interface NoteListProps {
   notes: Note[];
@@ -62,7 +63,7 @@ export function NoteList({
               onClick={() => setConfirmingId(note.id)}
               aria-label={`Delete ${note.title || 'note'}`}
             >
-              Delete
+              <Icon name="trash" /> <span className="note-list-delete-label">Delete</span>
             </button>
           )}
         </li>

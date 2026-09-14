@@ -42,6 +42,8 @@ src/
 - Filter notes by tag, category, or both together
 - Enter and clear a search query using the saved-notes search control
 - Search note titles, body text, and tags with normalized matching
+- Use a clean, responsive search-first workspace on desktop and mobile
+- Navigate a touch-friendly mobile list-to-workspace flow with clear action icons
 - Clear active filters and return to the complete note list
 - Reject empty and duplicate tags using case-insensitive comparison
 - Notes persist in the browser's IndexedDB and survive a page refresh

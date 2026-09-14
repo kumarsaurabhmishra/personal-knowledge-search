@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Note, NoteInput } from '../models/note';
 import { validateNoteInput, isValid, type NoteValidationErrors } from '../models/validation';
 import { isDuplicateTag, isEmptyTag } from '../models/tags';
+import { Icon } from './Icon';
 
 interface NoteFormProps {
   note: Note | null;
@@ -113,7 +114,7 @@ export function NoteForm({ note, onSave, onCancel }: NoteFormProps) {
             aria-describedby={tagInputError || errors.tags ? 'note-tags-error' : undefined}
           />
           <button type="button" className="btn-secondary" onClick={addTag}>
-            Add tag
+            <Icon name="tag" /> Add tag
           </button>
         </div>
         {(tagInputError || errors.tags) && (
@@ -136,10 +137,11 @@ export function NoteForm({ note, onSave, onCancel }: NoteFormProps) {
 
       <div className="note-form-actions">
         <button type="submit" className="btn-primary">
+          <Icon name="check" />
           {note ? 'Save changes' : 'Create note'}
         </button>
         <button type="button" className="btn-text" onClick={onCancel}>
-          Cancel
+          <Icon name="x" /> Cancel
         </button>
       </div>
     </form>
